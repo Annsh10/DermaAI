@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skin Classification - DermaAI</title>
+    <link rel="stylesheet" href="../static/style.css">
+    <link rel="stylesheet" href="../static/features.css">
+    <link rel="stylesheet" href="../static/skin.css">
+    <style>
+        .topbar { position: fixed; top: 0; width: 100%; z-index: 1000; background: rgba(255,255,255,0.9); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(0,0,0,0.06); }
+        .topbar-inner { max-width: 1200px; margin: 0 auto; height: 64px; display: flex; align-items: center; justify-content: space-between; padding: 0 24px; }
+        .brand { font-weight: 800; color: #0a69ff; text-decoration: none; letter-spacing: 0.3px; font-size: 24px; }
+        .nav { display:flex; gap:22px; align-items:center; }
+        .nav > a, .nav > .dd > a { color:#1d1d1f; font-weight:600; text-decoration:none; position:relative; }
+        .nav > a:after, .nav > .dd > a:after { content:""; position:absolute; left:0; bottom:-6px; height:2px; width:0; background:#0a69ff; transition: width .25s ease; }
+        .nav > a:hover:after, .nav > .dd > a:hover:after { width:100%; }
+        .dd { position:relative; }
+        .dd-menu { position:absolute; top:120%; left:0; min-width:260px; padding:10px; background:#fff; border:1px solid rgba(0,0,0,0.08); border-radius:12px; box-shadow:0 18px 54px rgba(0,0,0,0.12); opacity:0; visibility:hidden; transform: translateY(-6px); transition: all .2s ease; }
+        .dd:hover .dd-menu { opacity:1; visibility:visible; transform: translateY(0); }
+        .dd-item { display:flex; gap:10px; padding:10px; border-radius:10px; text-decoration:none; color:#1d1d1f; align-items:center; }
+        .dd-item:hover { background: rgba(10,105,255,0.06); }
+        .dd-ico { width:34px; height:34px; display:flex; align-items:center; justify-content:center; border-radius:10px; background: rgba(10,105,255,0.08); color:#0a69ff; }
+        .actions { display:flex; gap:10px; }
+        .btn { padding:10px 16px; border-radius:10px; border:1px solid rgba(0,0,0,0.08); text-decoration:none; font-weight:600; }
+        .btn.primary { background:#0a69ff; color:#fff; border:none; }
+        .btn.primary:hover { background:#0051d5; }
+        .btn.ghost:hover { background: rgba(0,0,0,0.04); }
+        .user-menu { position: relative; }
+        .avatar { width:36px; height:36px; border-radius:50%; background:#0a69ff; color:#fff; display:flex; align-items:center; justify-content:center; font-weight:700; cursor:pointer; }
+        .user-dd { position:absolute; right:0; top:120%; min-width:180px; background:#fff; border:1px solid rgba(0,0,0,0.08); border-radius:12px; box-shadow:0 18px 54px rgba(0,0,0,0.12); padding:8px; opacity:0; visibility:hidden; transform: translateY(-6px); transition: all .2s ease; }
+        .user-menu:hover .user-dd { opacity:1; visibility:visible; transform: translateY(0); }
+        .user-dd a { display:block; padding:10px 12px; border-radius:8px; color:#1d1d1f; text-decoration:none; font-weight:600; }
+        .user-dd a:hover { background: rgba(10,105,255,0.06); }
+
+        .page-hero { padding: 120px 24px 24px; background: linear-gradient(135deg, #f8f9ff, #ffffff); }
+        .wrap { max-width: 1100px; margin: 0 auto; }
+        .grid-two { display:grid; grid-template-columns: 1.1fr 0.9fr; gap:16px; }
+        .upload-card { background:#fff; border:1px solid rgba(0,0,0,0.06); border-radius:16px; box-shadow:0 20px 60px rgba(0,0,0,0.08); padding:20px; }
+        .dropzone { border:2px dashed rgba(10,105,255,0.3); border-radius:14px; padding:20px; display:grid; place-items:center; text-align:center; background: rgba(10,105,255,0.04); cursor: pointer; }
+        .dropzone:hover { background: rgba(10,105,255,0.06); }
+        .preview { margin-top:12px; display:flex; gap:16px; align-items:center; }
+        .preview img { width: 140px; height: 140px; object-fit: cover; border-radius:12px; border:1px solid rgba(0,0,0,0.06); }
+        .meta-mini { color:#5c5c61; font-size: 13px; margin-top: 6px; }
+        .progress { height: 6px; background: rgba(0,0,0,0.08); border-radius: 3px; overflow:hidden; margin-top: 10px; display:none; }
+        .progress .bar { height: 100%; width: 0%; background: linear-gradient(90deg, #0a69ff, #30D158); transition: width .4s ease; }
+        .info-card { background:#fff; border:1px solid rgba(0,0,0,0.06); border-radius:16px; box-shadow:0 12px 36px rgba(0,0,0,0.06); padding:18px; }
+        .info-card h3 { margin-bottom:8px; }
+        .tips { margin:0; padding-left: 18px; color:#5c5c61; }
+        .badge { display:inline-block; padding:6px 10px; border-radius:999px; background:#f6f8ff; border:1px solid rgba(0,0,0,0.06); color:#5c5c61; font-weight:600; font-size:12px; }
+        @media (max-width: 900px){ .grid-two { grid-template-columns: 1fr; } }
+        /* Footer styles to match landing */
+        .site-footer { padding: 40px 24px; background:#f6f8ff; border-top:1px solid rgba(0,0,0,0.06); }
+        .site-footer .inner { max-width: 1200px; margin: 0 auto; display:grid; grid-template-columns: 1.5fr 1fr 1fr 1fr; gap: 24px; }
+        .site-footer a { color:#5c5c61; text-decoration:none; }
+        .copy { text-align:center; color:#5c5c61; padding-top: 18px; }
+        @media (max-width: 900px) { .site-footer .inner { grid-template-columns: 1fr; text-align:center; } }
+    </style>
+</head>
+<body>
+    <header class="topbar">
+        <div class="topbar-inner">
+            <a class="brand" href="/">DermaAI</a>
+            <nav class="nav">
+                <a href="/">Home</a>
+                <div class="dd">
+                    <a href="#">Features ▾</a>
+                    <div class="dd-menu">
+                        <a class="dd-item" href="/skin/"><span class="dd-ico">🧪</span> <div><strong>Skin Check</strong></div></a>
+                        <a class="dd-item" href="/nail/"><span class="dd-ico">💅</span> <div><strong>Nail Check</strong></div></a>
+                        <a class="dd-item" href="/chat/"><span class="dd-ico">🤖</span> <div><strong>Assistant</strong></div></a>
+                        <a class="dd-item" href="/routine/"><span class="dd-ico">🧴</span> <div><strong>Routine</strong></div></a>
+                    </div>
+                </div>
+                <a href="#about">About</a>
+                <a href="#contact">Contact</a>
+            </nav>
+            <div class="actions">
+                {% if session.get('user_id') %}
+                <div class="user-menu">
+                    <div class="avatar">{{ (session.get('user_email','?')[:1] or 'U')|upper }}</div>
+                    <div class="user-dd">
+                        <a href="/profile">Profile</a>
+                        <a href="/logout">Logout</a>
+                    </div>
+                </div>
+                {% else %}
+                <a class="btn ghost" href="/login">Sign in</a>
+                <a class="btn primary" href="/signup">Create account</a>
+                {% endif %}
+            </div>
+        </div>
+    </header>
+
+    <section class="page-hero">
+        <div class="wrap">
+            <div class="section-header">
+                <h2>Skin Classification</h2>
+                <p>Upload a clear photo to get quick, easy‑to‑understand insights.</p>
+            </div>
+            <div class="grid-two">
+                <div class="upload-card">
+                    <form action="/skin/predict" method="post" enctype="multipart/form-data">
+                        <label class="dropzone">
+                            <div>
+                                <div style="font-weight:700;">Drag & drop an image</div>
+                                <div style="color:#5c5c61; font-size:14px;">or click to browse</div>
+                                <div class="meta-mini">PNG, JPG up to 10MB • Good light • In-focus</div>
+                            </div>
+                        </label>
+                        <input id="skinFile" type="file" name="image" accept="image/*" required style="display:none;">
+                        <div class="preview" id="skinPreview" style="display:none;">
+                            <img id="skinImg" alt="preview">
+                            <div>
+                                <div id="skinName" style="font-weight:600;"></div>
+                                <div id="skinSize" class="meta-mini"></div>
+                                <div class="progress" id="skinProg"><div class="bar" id="skinBar"></div></div>
+                                <button class="cta-btn primary" type="submit" style="margin-top:8px;">Analyze Image</button>
+                            </div>
+                        </div>
+                    </form>
+                    {% if result %}
+                    <div class="result-grid" style="margin-top:12px;">
+                        <div class="result-card">
+                            <div><strong>Prediction:</strong> {{ result.predicted }} ({{ (result.confidence * 100)|round(1) }}%)</div>
+                            <div class="meta">Result generated</div>
+                        </div>
+                        {% if image_filename %}
+                        <div class="result-card">
+                            <div class="meta">Uploaded Image</div>
+                            <img class="thumb" src="/static/uploads/{{ image_filename }}" alt="uploaded image">
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="info-card">
+                    <h3>Tips for best results</h3>
+                    <ul class="tips">
+                        <li>Use natural light and avoid harsh shadows.</li>
+                        <li>Keep the camera steady and the area in focus.</li>
+                        <li>Fill most of the frame with the skin area.</li>
+                        <li>Do not upload sensitive or identifying photos.</li>
+                    </ul>
+                    <div style="margin-top:10px;">
+                        <span class="badge">Privacy‑first</span>
+                        <span class="badge">Fast analysis</span>
+                        <span class="badge">Clear results</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="site-footer" id="contact" style="margin-top:20px;">
+        <div class="inner">
+            <div>
+                <h4>DermaAI</h4>
+                <p>Professional AI tools for dermatology.</p>
+            </div>
+            <div>
+                <h4>Product</h4>
+                <a href="/skin/">Skin</a><br>
+                <a href="/nail/">Nails</a><br>
+                <a href="/chat/">Chatbot</a><br>
+                <a href="/routine/">Routine</a>
+            </div>
+            <div>
+                <h4>Company</h4>
+                <a href="#">About</a><br>
+                <a href="#">Careers</a><br>
+                <a href="#contact">Contact</a>
+            </div>
+            <div>
+                <h4>Legal</h4>
+                <a href="#">Privacy</a><br>
+                <a href="#">Terms</a>
+            </div>
+        </div>
+        <div class="copy">© 2025 DermaAI. All rights reserved.</div>
+    </footer>
+
+    <script>
+    (function(){
+        const input = document.getElementById('skinFile');
+        const zone = document.querySelector('.dropzone');
+        const preview = document.getElementById('skinPreview');
+        const img = document.getElementById('skinImg');
+        const nameEl = document.getElementById('skinName');
+        const sizeEl = document.getElementById('skinSize');
+        const prog = document.getElementById('skinProg');
+        const bar = document.getElementById('skinBar');
+        zone.addEventListener('dragover', e=>{ e.preventDefault(); zone.style.background='rgba(10,105,255,0.08)';});
+        zone.addEventListener('dragleave', ()=>{ zone.style.background='rgba(10,105,255,0.04)';});
+        zone.addEventListener('drop', e=>{ e.preventDefault(); input.files = e.dataTransfer.files; handle(); });
+        zone.addEventListener('click', ()=> input.click());
+        input.addEventListener('change', handle);
+        function handle(){
+            if (!input.files || !input.files[0]) return;
+            const file = input.files[0];
+            nameEl.textContent = file.name;
+            sizeEl.textContent = (file.size/1024/1024).toFixed(2) + ' MB';
+            const reader = new FileReader();
+            reader.onprogress = ev => {
+                if (ev.lengthComputable) {
+                    prog.style.display = 'block';
+                    const pct = Math.min(100, Math.round(ev.loaded/ev.total*100));
+                    bar.style.width = pct + '%';
+                }
+            };
+            reader.onload = ev => { img.src = ev.target.result; preview.style.display='flex'; prog.style.display='none'; bar.style.width='0%'; };
+            reader.readAsDataURL(file);
+        }
+    })();
+    </script>
+</body>
+</html>
+
+

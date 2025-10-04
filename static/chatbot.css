@@ -1,0 +1,6 @@
+.chat-card { border-radius: 16px; overflow: hidden; }
+.chat-header { background: linear-gradient(135deg, #007AFF 0%, #5856D6 100%); color:white; font-weight:600; }
+.msg.user { background: rgba(0,122,255,0.12); }
+.msg.assistant { background: rgba(0,0,0,0.04); }
+.chat-input button { min-width: 100px; }
+

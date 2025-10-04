@@ -1,0 +1,5 @@
+.hero-slim { padding-top: 120px; }
+.upload-area { display:flex; gap:16px; align-items:center; justify-content:center; flex-wrap:wrap; }
+.confidence { font-weight:600; color:#007AFF; }
+.conditions { color:#86868b; font-size:14px; }
+

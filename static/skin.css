@@ -1,0 +1,6 @@
+.hero-slim { padding-top: 120px; }
+.upload-area { display:flex; gap:16px; align-items:center; justify-content:center; flex-wrap:wrap; }
+.result-metrics { display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-top: 12px; }
+.metric { background:white; border:1px solid rgba(0,0,0,0.06); border-radius:12px; padding:12px; }
+.preview { text-align:center; }
+

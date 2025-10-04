@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In - DermaAI</title>
+    <link rel="stylesheet" href="../static/auth.css">
+    <style>
+        .auth-card { max-width: 520px; }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="auth-container centered">
+        <div class="auth-card">
+            <div class="auth-header">
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="flash" data-cat="{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+                {% endwith %}
+                <a href="/" class="back-link">← Back to Home</a>
+                <div class="logo">DermaAI</div>
+                <h1>Welcome Back</h1>
+                <p>Sign in to your account to continue</p>
+            </div>
+            
+            <form class="auth-form" id="loginForm" method="post" action="/login">
+                <input type="hidden" name="next" value="{{ next_url or '' }}">
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" required>
+                    <span class="form-error" id="emailError"></span>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <div class="password-input">
+                        <input type="password" id="password" name="password" required>
+                        <button type="button" class="password-toggle" id="passwordToggle">
+                            <span class="eye-icon">👁️</span>
+                        </button>
+                    </div>
+                    <span class="form-error" id="passwordError"></span>
+                </div>
+                
+                <div class="form-options">
+                    <label class="checkbox-container">
+                        <input type="checkbox" id="remember">
+                        <span class="checkmark"></span>
+                        Remember me
+                    </label>
+                    <a href="#" class="forgot-link">Forgot password?</a>
+                </div>
+                
+                <button type="submit" class="auth-btn primary">
+                    <span class="btn-text">Sign In</span>
+                    <div class="btn-loader"></div>
+                </button>
+                
+                <div class="divider">
+                    <span>or</span>
+                </div>
+                
+                <button type="button" class="auth-btn secondary google-btn">
+                    <svg width="18" height="18" viewBox="0 0 18 18">
+                        <path fill="#4285F4" d="M16.51 8H8.98v3h4.3c-.18 1-.74 1.48-1.6 2.04v2.01h2.6a7.8 7.8 0 0 0 2.38-5.88c0-.57-.05-.66-.15-1.18z"/>
+                        <path fill="#34A853" d="M8.98 17c2.16 0 3.97-.72 5.3-1.94l-2.6-2.04a4.8 4.8 0 0 1-2.7.75 4.8 4.8 0 0 1-4.52-3.36H1.83v2.07A8 8 0 0 0 8.98 17z"/>
+                        <path fill="#FBBC05" d="M4.46 10.41a4.8 4.8 0 0 1-.25-1.41c0-.49.09-.97.25-1.41V5.52H1.83a8 8 0 0 0 0 7.17l2.63-2.28z"/>
+                        <path fill="#EA4335" d="M8.98 4.18c1.17 0 2.23.4 3.06 1.2l2.3-2.3A8 8 0 0 0 8.98 1 8 8 0 0 0 1.83 5.52L4.46 7.6a4.77 4.77 0 0 1 4.52-3.42z"/>
+                    </svg>
+                    Continue with Google
+                </button>
+            </form>
+            
+            <div class="auth-footer">
+                <p>Don't have an account? <a href="/signup" class="switch-link">Sign up</a></p>
+            </div>
+        </div>
+    </div>
+    
+    <script src="../static/auth.js"></script>
+    <script>
+    (function(){
+        const el = document.querySelector('.flash');
+        if (!el) return;
+        const msg = el.textContent.trim();
+        const toast = document.createElement('div');
+        toast.textContent = msg;
+        toast.style.position = 'fixed'; toast.style.top = '16px'; toast.style.right = '16px';
+        toast.style.background = '#0a69ff'; toast.style.color = '#fff';
+        toast.style.padding = '10px 14px'; toast.style.borderRadius = '10px';
+        toast.style.boxShadow = '0 12px 36px rgba(0,0,0,0.12)'; toast.style.zIndex = '9999';
+        toast.style.opacity = '0'; toast.style.transform = 'translateY(-8px)'; toast.style.transition = 'opacity .3s ease, transform .3s ease';
+        document.body.appendChild(toast);
+        requestAnimationFrame(()=>{ toast.style.opacity = '1'; toast.style.transform = 'translateY(0)'; });
+        setTimeout(()=>{ toast.style.opacity = '0'; }, 2500);
+        setTimeout(()=>{ toast.remove(); }, 3000);
+    })();
+    </script>
+</body>
+</html>
